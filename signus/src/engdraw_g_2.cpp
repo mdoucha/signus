@@ -22,97 +22,26 @@ while (ecx > 0) { \
 void DrawUpTerrA(int x, int y, void* bmp)
 {
 	uint8_t* esi = (uint8_t*)bmp;
-	uint8_t* edi = (uint8_t*)MapBuf + y * (560+Mbd) + x;
+	uint8_t* edi = (uint8_t*)MapBuf + y * VIEW_PIXSZ_X + x;
 	uint8_t al = 0;
 	int ecx = 0;
 	
-edi += 26;
-;
-__FRAGMENT_1__;
-__FRAGMENT_1__;
-__FRAGMENT_1__;
-__FRAGMENT_1__;
-;
-edi += Mbd+554;
-ecx = 8;
-__FRAGMENT_2__;
-edi += Mbd+550;
-ecx = 12;
-__FRAGMENT_2__;
-edi += Mbd+546;
-ecx = 16;
-__FRAGMENT_2__;
-edi += Mbd+542;
-ecx = 20;
-__FRAGMENT_2__;
-edi += Mbd+538;
-ecx = 24;
-__FRAGMENT_2__;
-edi += Mbd+534;
-ecx = 28;
-__FRAGMENT_2__;
-edi += Mbd+530;
-ecx = 32;
-__FRAGMENT_2__;
-edi += Mbd+526;
-ecx = 36;
-__FRAGMENT_2__;
-edi += Mbd+522;
-ecx = 40;
-__FRAGMENT_2__;
-edi += Mbd+518;
-ecx = 44;
-__FRAGMENT_2__;
-edi += Mbd+514;
-ecx = 48;
-__FRAGMENT_2__;
-edi += Mbd+510;
-ecx = 52;
-__FRAGMENT_2__;
-edi += Mbd+506;
-ecx = 56;
-__FRAGMENT_2__;
-edi += Mbd+506;
-ecx = 52;
-__FRAGMENT_2__;
-edi += Mbd+510;
-ecx = 48;
-__FRAGMENT_2__;
-edi += Mbd+514;
-ecx = 44;
-__FRAGMENT_2__;
-edi += Mbd+518;
-ecx = 40;
-__FRAGMENT_2__;
-edi += Mbd+522;
-ecx = 36;
-__FRAGMENT_2__;
-edi += Mbd+526;
-ecx = 32;
-__FRAGMENT_2__;
-edi += Mbd+530;
-ecx = 28;
-__FRAGMENT_2__;
-edi += Mbd+534;
-ecx = 24;
-__FRAGMENT_2__;
-edi += Mbd+538;
-ecx = 20;
-__FRAGMENT_2__;
-edi += Mbd+542;
-ecx = 16;
-__FRAGMENT_2__;
-edi += Mbd+546;
-ecx = 12;
-__FRAGMENT_2__;
-edi += Mbd+550;
-ecx = 8;
-__FRAGMENT_2__;
-edi += Mbd+554;
-__FRAGMENT_1__;
-__FRAGMENT_1__;
-__FRAGMENT_1__;
-__FRAGMENT_1__;
+	edi += 26;
+
+	for (int i = 1; i < 14; ++i) {
+		ecx = i*4;
+		__FRAGMENT_2__;
+		edi += (VIEW_PIXSZ_X-2) - i*4;
+	}
+
+	ecx = 56;
+	__FRAGMENT_2__;
+
+	for (int i = 13; i >= 0; --i) {
+		edi += (VIEW_PIXSZ_X-2) - i*4;
+		ecx = i*4;
+		__FRAGMENT_2__;
+	}
 }
 
 

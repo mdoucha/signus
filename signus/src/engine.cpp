@@ -1383,6 +1383,7 @@ void SelectField(int x, int y)
         
         NewSel.x = *((byte*)LocalBufX+ax+ay*VIEW_PIXSZ_X/2);
         NewSel.y = *((byte*)LocalBufY+ax+ay*VIEW_PIXSZ_X/2);
+       
         
         if ((NewSel.x == 0xFF) || (NewSel.y == 0xFF)) { // mimo mapu:
             if (SelPos.x != 0xFF) {

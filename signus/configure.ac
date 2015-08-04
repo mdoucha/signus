@@ -91,7 +91,7 @@ yes)	DEBUG_FLAGS="-g -O0 -Wall"
     ;;
 esac
 
-GCC_FLAGS="-fno-rtti -fno-exceptions"
+GCC_FLAGS=""
 
 
 data_version=`echo $VERSION | sed -e 's,\([[0-9]]*\.[[0-9]]*\)\.[[0-9]]*,\1,g'`

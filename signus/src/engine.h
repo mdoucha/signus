@@ -116,15 +116,15 @@ extern void GetSpriteRect(TRect *r, TSprite *s, int x, int y, int lx = 0, int ly
 #define    VIEW_SIZE_Y  19
 
 // Rozmery kresliciho buf:
-#define VIEW_PIXSZ_X 728  /* = ((VIEW_SIZE_X + 1) * FIELD_X) */
-#define VIEW_PIXSZ_Y 616  /* = ((VIEW_SIZE_Y + 3) * FIELD_Y) */
+#define VIEW_PIXSZ_X ((VIEW_SIZE_X + 1) * FIELD_X)
+#define VIEW_PIXSZ_Y ((VIEW_SIZE_Y + 3) * FIELD_Y)
 
 // Pozice kresliciho buf. na obrazovce a skutecne rozmery:
 #define VIEW_X_POS     9
 #define VIEW_Y_POS    36
 
-#define VIEW_SX     664   /* = VIEW_SIZE_X * FIELD_X */
-#define VIEW_SY     532   /* = VIEW_SIZE_Y * FIELD_Y */
+#define VIEW_SX    (VIEW_SIZE_X * FIELD_X)
+#define VIEW_SY    (VIEW_SIZE_Y * FIELD_Y)
 
 
 // Offset prvniho viditelneho pixelu v MapBuf:

@@ -167,7 +167,7 @@ int TDataFile::lookfor(const char *name, int lo, int hi)
 void *TDataFile::get(const char *name)
 {
 	void *ptr = NULL;
-	char nm[9];
+	char nm[1024];
 	
 	strcpy(nm, readprefix);
 	strcat(nm, name);
