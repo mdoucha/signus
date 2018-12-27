@@ -46,14 +46,14 @@ XIPH_PATH_OGG([], [AC_MSG_ERROR([Ogg Vorbis is required by Signus.])])
 AC_MSG_CHECKING(for Vorbis)
   AC_TRY_COMPILE([
   #include <vorbis/vorbisfile.h>
-  ], [], 
+  ], [],
   [AC_MSG_RESULT([yes])],
   [
     AC_MSG_RESULT([no])
     AC_MSG_ERROR([Ogg Vorbis is required by Signus.])
   ])
 
-AC_CHECK_LIB(jpeg, jpeg_set_colorspace, [], 
+AC_CHECK_LIB(jpeg, jpeg_set_colorspace, [],
       [AC_MSG_ERROR([libjpeg is required by Signus.])])
 
 AC_MSG_CHECKING([for SDL_mixer >= 1.2.5])
@@ -66,7 +66,7 @@ AC_MSG_CHECKING([for SDL_mixer >= 1.2.5])
           MIX_PATCHLEVEL >= 5))
       #error "SDL_mixer too old!"
   #endif
-  ], [], 
+  ], [],
   [AC_MSG_RESULT([yes])],
   [
     AC_MSG_RESULT([no])
@@ -76,7 +76,7 @@ AC_MSG_CHECKING([for SDL_mixer >= 1.2.5])
 AC_CHECK_HEADER([SDL/SDL_ttf.h],[],
                 [AC_MSG_ERROR([SDL_ttf is required by Signus.])])
 
-AC_CHECK_LIB(SDL_ttf, TTF_RenderUTF8_Shaded, [], 
+AC_CHECK_LIB(SDL_ttf, TTF_RenderUTF8_Shaded, [],
       [AC_MSG_ERROR([SDL_ttf is required by Signus.])])
 
 
@@ -86,12 +86,12 @@ dnl FIXME - check for version-data file and contained version
 case "$USE_DEBUG" in
 yes)	DEBUG_FLAGS="-g -O0 -Wall"
         NASMFLAGS="$NASMFLAGS -g"
-    ;;    
+    ;;
 *)	DEBUG_FLAGS="-O3"
     ;;
 esac
 
-GCC_FLAGS=""
+GCC_FLAGS="-Wno-error"
 
 
 data_version=`echo $VERSION | sed -e 's,\([[0-9]]*\.[[0-9]]*\)\.[[0-9]]*,\1,g'`

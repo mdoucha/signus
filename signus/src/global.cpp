@@ -54,13 +54,13 @@ FILE *dbgOutput;
 
 void dbgReport()
 {
-    fprintf(dbgOutput, 
-        "\n ---=== SIGNUS DEBUGGING REPORT FILE ===--- \n\n" 
+    fprintf(dbgOutput,
+        "\n ---=== SIGNUS DEBUGGING REPORT FILE ===--- \n\n"
         "Memory needed: %i bytes (%ikB)\n"
         "  [ physical memory needed - locking: %i bytes (%iKB) ]\n"
         "Actually allocated memory (should be 0): %i bytes\n"
         "Running time: %i ticks (%i seconds)\n",
-        dbgMaxMemAlloc, dbgMaxMemAlloc / 1024,      
+        dbgMaxMemAlloc, dbgMaxMemAlloc / 1024,
         dbgMaxMemLocked, dbgMaxMemLocked / 1024,
         dbgMemAlloc,
         clock(), clock() / CLOCKS_PER_SEC);
@@ -85,7 +85,7 @@ int iniIdleDelay;
 int iniScrollDelay, iniAnimDelay, iniAnimDelay2;
 
 int iniMusicVol, iniSoundVol, iniSpeechVol;
-        
+
 int iniEnhancedGuiOn, iniShowStatusbar, iniShowMoveRange, iniShowShootRange,
     iniShowVisibRange, iniStopOnNewEnemy;
 
@@ -112,20 +112,20 @@ static const char *GetConfigFileName()
     if (!home) home = ".";
 
     static char inifile[1024] = "";
-    
+
     if (*inifile == 0)
     {
         strncpy(inifile, getSignusConfigDir(), 1024);
         strncat(inifile, "/signus.ini", 1024);
     }
-    
+
     return inifile;
 }
 
 bool LoadINI()
 {
     dictionary *dict = NULL;
-    
+
     const char *configname = GetConfigFileName();
     if (fileExists(configname))
         dict = iniparser_load((char*)configname);
@@ -137,13 +137,13 @@ bool LoadINI()
                         "Please reinstall Signus.\n");
         return FALSE;
     }
-    
+
     // FIXME -- use locales!!!
     strcpy(iniLanguage, "e");
-    
+
     //iniResolution = iniparser_getint(dict, "video:resolution", -1);
     iniResolution = SVGA_800x600; // FIXME -- get rid of iniResolution !!
-    
+
     iniBrightCorr = iniparser_getint(dict, "video:brightness", -1);
     iniTitledAnims = iniparser_getint(dict, "video:anims_titled", -1);
     iniInterpolateAnims = iniparser_getint(dict, "video:anims_interpolated", -1);
@@ -168,9 +168,9 @@ bool LoadINI()
     iniStopOnNewEnemy = iniparser_getint(dict, "interface:stop_on_new_enemy", -1);
 
     iniparser_freedict(dict);
-    
+
     strcpy(iniLocale, "en"); // FIXME FIXME FIXME !
-    
+
     return true;
 }
 
@@ -272,7 +272,7 @@ int RollDice()
 int CheckFile(const char *name)
 {
     FILE *f = fopensafe(name, "rb");
-    
+
     if (f == NULL) {
         fprintf(stderr, "Cannot find data file '%s'!\n", name);
         return FALSE;
@@ -282,7 +282,7 @@ int CheckFile(const char *name)
 }
 
 int CheckFiles()
-{   
+{
     return (CheckFile("graphics.dat") && CheckFile("graphics-common.dat") &&
             CheckFile("missions.dat") && CheckFile("texts.dat") &&
             CheckFile("unitsnd.idx"));
@@ -303,17 +303,17 @@ int InitGlobal()
 {
 #ifdef DEBUG
     dbgOutput = fopen("debug.nfo", "wt");
-    {   
+    {
         TDPMIInfo i;
-        
+
         dpmiinfo(&i);
         fprintf(dbgOutput, "DPMI %i.%i\nVirtual memory: %i\n",
                 i.VersionMajor, i.VersionMinor, i.Flags & VMM_Present);
     }
-    fprintf(dbgOutput, 
+    fprintf(dbgOutput,
             "Free memory (on start): %ikB\n",   GetFreeMem() / 1024);
 #endif
-   
+
     if (!LoadINI()) return FALSE;
 
     if (!CheckFiles()) return FALSE;
@@ -335,9 +335,9 @@ int InitGlobal()
     TTF_SetFontStyle(HugeFont, TTF_STYLE_BOLD);
     TinyFont = TTF_OpenFont(fontfileTiny, 10);
     TTF_SetFontStyle(TinyFont, TTF_STYLE_NORMAL);
-    
+
     if (NormalFont == NULL && HugeFont == NULL && TinyFont == NULL) return 0;
-    
+
     MessageBuf = memalloc(MSGBUF_SX * MSGBUF_SY);
     lockmem(MessageBuf, MSGBUF_SX * MSGBUF_SY);
     {
@@ -348,7 +348,7 @@ int InitGlobal()
     TimerWatchBkg = GraphicsDF->get("timerbkg");
     TimerWatchBuf = memalloc(50*14);
     ProgressBuf = (byte*) memalloc(PROGRESS_SX * PROGRESS_SY);
-    
+
     {
         void *p;
         p = (byte*)GraphicsDF->get("paletted");
@@ -359,9 +359,9 @@ int InitGlobal()
         memfree(p);
     }
 
-    LoadArray((void**)SigText, TXT_COUNT, TextsDF, "txt%i");    
-    LoadArray((void**)MsgText, MSG_COUNT, TextsDF, "msg%i");    
-    
+    LoadArray((void**)SigText, TXT_COUNT, TextsDF, "txt%i");
+    LoadArray((void**)MsgText, MSG_COUNT, TextsDF, "msg%i");
+
 #ifdef DEBUG
     //memset(MessageFrames[2], 0, MSGBUF_SX * MSGBUF_SY);
 #endif
@@ -433,7 +433,7 @@ void Union(TRect *r1, TRect *r2)
 void Union2(int *x1, int *y1, int *w1, int *h1, int x2, int y2, int w2, int h2)
 {
     TRect r1, r2;
-    
+
     r1.x1 = *x1, r1.x2 = *x1 + *w1 - 1;
     r1.y1 = *y1, r1.y2 = *y1 + *h1 - 1;
     r2.x1 = x2, r2.x2 = x2 + w2 - 1;
@@ -460,14 +460,14 @@ const char *getSignusConfigDir()
     if (!home) home = ".";
 
     static char inidir[1024] = "";
-    
+
     if (*inidir == 0)
     {
         const char *home = getenv("HOME");
         if (!home) home = ".";
         strncpy(inidir, home, 1024);
         strncat(inidir, "/.signus", 1024);
-        
+
         if (!dirExists(inidir))
         {
             mkdir(inidir, 0700);
@@ -494,13 +494,13 @@ FILE *fopensafe(const char *name, const char *mode)
         snprintf(nm, 1024, "%s/nolang/%s", getSignusDataDir(), name);
         f = fopen(nm, mode);
     }
-    
+
     if (!f)
     {
         snprintf(nm, 1024, "%s/%s/%s", getSignusDataDir(), iniLocale, name);
         f = fopen(nm, mode);
     }
-    
+
     if (!f)
     {
         snprintf(nm, 1024, "%s/default/%s", getSignusDataDir(), name);
@@ -526,7 +526,7 @@ bool fileExists(const char *name)
 int roundnum(double d)
 {
     int i = floor(d);
-    
+
     if (d - (double)i < 0.5) return i;
     else return i+1;
 }
@@ -542,20 +542,20 @@ void WaitCursor(int turn_on)
 {
     static int locks = 0;
     static int lastcur = 0;
-    
-    
+
+
     if (turn_on) {
         if (!locks) {
             lastcur = Mouse.ActCur;
             MouseSetCursor(mcurWait);
         }
         locks++;
-    }   
+    }
     else {
         locks--;
         if (!locks)
             MouseSetCursor(lastcur);
-    }   
+    }
 }
 
 
@@ -575,16 +575,16 @@ void ProgressUpdate()
     int pix = (PROGRESS_SX * ProgValue) / ProgLimit;
     int i, j;
     static byte clrs[PROGRESS_SY] = {36, 36, 4, 7, 36, 36};
-    
+
     if (pix < 3)
         memset(ProgressBuf, clrBlue, PROGRESS_SX * PROGRESS_SY);
-    else {  
+    else {
         for (j = 0; j < PROGRESS_SY; j++) {
             for (i = 0; i < pix; i++) ProgressBuf[j * PROGRESS_SX + i] = clrs[j];
             for (; i < PROGRESS_SX; i++) ProgressBuf[j * PROGRESS_SX + i] = clrBlue;
         }
     }
-    
+
     MouseFreeze(PROGRESS_X_POS, PROGRESS_Y_POS, PROGRESS_SX, PROGRESS_SY);
     PutBitmap(PROGRESS_X_POS, PROGRESS_Y_POS, ProgressBuf, PROGRESS_SX, PROGRESS_SY);
     MouseUnfreeze();
@@ -657,7 +657,7 @@ void Message(const char *msg)
 void Message(int msg)
 {
     char b[30];
-    
+
     sprintf(b, "msg%i", msg);
     SaySpeech(b, 1000);
     Message(MsgText[msg]);
@@ -687,15 +687,15 @@ void MsgBox(char *str)
     }
     else {
         void *dummy;
-    
+
         MsgBoxBuf = memalloc(MSGBOX_SX * MSGBOX_SY);
         GetBitmap32(MSGBOX_X_POS, MSGBOX_Y_POS, MsgBoxBuf, MSGBOX_SX, MSGBOX_SY);
-        
+
         dummy = GraphicsDF->get("msgbox");
         PutStr(dummy, MSGBOX_SX,
                (MSGBOX_SX - GetStrWidth(str, HugeFont)) / 2, (MSGBOX_SY - GetStrHeight(str, HugeFont)) / 2,
                str, HugeFont, clrWhite, clrBlack);
-        PutBitmap32(MSGBOX_X_POS, MSGBOX_Y_POS, dummy, MSGBOX_SX, MSGBOX_SY);   
+        PutBitmap32(MSGBOX_X_POS, MSGBOX_Y_POS, dummy, MSGBOX_SX, MSGBOX_SY);
         memfree(dummy);
     }
 }
@@ -728,7 +728,7 @@ void StartLoading(char *picname)
     MouseHide();
     ptr = GraphicsDF->get(buf);
     if (ptr) {
-        DrawPicture(ptr); 
+        DrawPicture(ptr);
         memfree(ptr);
     }
 
@@ -744,7 +744,7 @@ void UpdateLoading()
 {
     char b[9];
     void *buf;
-    
+
     sprintf(b, "load%i", LoadPhase++);
     if (LoadPhase == 16) LoadPhase = 0;
     buf = LoadBuf[LoadPhase];
@@ -773,13 +773,13 @@ void DoneLoading()
 static void DisplayWatch(int x, int y, int value)
 {
     int h, m, s;
-    char b[9];
-    
+    char b[12];
+
     s = value % 60; value /= 60;
     m = value % 60; value /= 60;
     h = value % 24;
     sprintf(b, "%02i:%02i:%02i", h, m, s);
-    
+
     memcpy(TimerWatchBuf, TimerWatchBkg, 50*14);
     PutStr(TimerWatchBuf, 50, 2, 3, b, TinyFont, clrWhite, clrBlack);
     PutBitmap(x, y, TimerWatchBuf, 50, 14);
@@ -793,9 +793,9 @@ extern TPoint SelPos;
 static void DisplayWatchField(int x, int y)
 {
     char b[9];
-    
+
     sprintf(b, "%03i:%03i", SelPos.x, SelPos.y);
-    
+
     memcpy(TimerWatchBuf, TimerWatchBkg, 50*14);
     PutStr(TimerWatchBuf, 50, 2, 3, b, TinyFont, clrWhite, clrBlack);
     PutBitmap(x, y, TimerWatchBuf, 50, 14);
@@ -823,46 +823,46 @@ TPoint CartezianSnail (int i)
 {
     TPoint pos = {0,0};
     if (i <= 0) return pos; // stred
-    
+
     int r = floor (0.5*sqrt(double(i)+1) - 0.5); // polomer nejvetsi uplne kruznice
     int n = i - 4*(r*r + r); // cislo pozice na nejvetsi kruznici
-    
+
     if (n == 0) { // nejvetsi kruznice je uplna
         pos.x = r;
         pos.y = -1;
         return pos;
     }
-    
+
     if (n < r + 2) { // Re x = r + 1, Im x >= 0
         pos.x = r + 1;
         pos.y = n - 1;
         return pos;
     }
-    
+
     if (n < 3*r + 4) { // Im x = r + 1
         pos.x = 2*r + 3 - n;
         pos.y = r + 1;
         return pos;
     }
-    
+
     if (n < 5*r + 6) { // Re x = -(r + 1)
         pos.x = -(r + 1);
         pos.y = 4*r + 5 - n;
         return pos;
     }
-    
+
     if (n < 7*r + 8) {
         pos.x = n - (6*r + 7);
         pos.y = -(r + 1);
         return pos;
     }
-    
+
     if (n < 8*r + 8) {
         pos.x = r + 1;
         pos.y = n - (8*r + 9);
         return pos;
     }
-    
+
     return pos;
 }
 

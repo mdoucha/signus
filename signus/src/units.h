@@ -20,7 +20,7 @@
  */
 
 
-// 
+//
 // Hlavickovy soubor pro jednotky
 // Obsah: - trida TObject
 //
@@ -60,17 +60,17 @@ class TObject {
             int MaxTimeUnits;                     // max. casu
             int Defense[3];                       // obranna cisla
             int Visib;                            // viditelnost
-            
+
             int X, Y, Alt;                        // pozice jednotky
             int LittleX, LittleY;                 // pozice na policku - pri anim
             int HitPoints;
             int TimeUnits;                                              // zbyvajici cas
-            
+
             int ActualSprite;
-            
+
             int CanChoose;                        // pomoc. pro ikonku select jeddnou za kolo
             int SmokeOn;                          // priznak povoleni kreslit kour
-            
+
             TAI_Info AI_Info;                     // ...
 
             TObject() {};
@@ -91,14 +91,14 @@ class TObject {
                     // bezne vraci sprite ActualSprite, muze byt zmeneno
             TSprite *GetSmoke();
                     // vraci typ koure pri poskozeni
-            inline char *GetName(); 
+            inline char *GetName();
             inline char *GetDescript();
                     // vraci jmeno a popisny text pro tuto jednotku
             void ChangeInstCnt(int delta);
                     // snizi/zvysi pocet instanci daneho typu v tabulkach
             virtual void PaintUnit(int DoCheck = TRUE);
                     // vykresli jednotku na obrazovku (zabezpeci i precnivani)
-                    // parametr urcuje, jestli se ma pohled centrovat, kdyz neni 
+                    // parametr urcuje, jestli se ma pohled centrovat, kdyz neni
                     // videt na jednotku
             virtual int PaintUnitInMove(int bx, int by);
                     // vykresli PaintUnit() pro dve sousedni policka - pri pohybu j.
@@ -144,7 +144,7 @@ class TObject {
             virtual int MoveFarSUB(int x, int y);
                     // pohyb na policko, osetruje i ta prilis vzdalena
                     // vraci: TRUE kdyz dojela,
-                    //        -1 kdyz nema dostatek casu - dojela, kam mohla                    
+                    //        -1 kdyz nema dostatek casu - dojela, kam mohla
                     //        -2 kdyz mela dojet na nepristupny teren nebo nenalez. cestu
                     //        -3 kdyz doslo palivo
                     //        FALSE kdyz jina chyba
@@ -190,7 +190,7 @@ class TObject {
                     // neco jako destruktor - vyjme z mem, z mapy, znici to
                     // (volano po Destroy a pote uz objekt neexistuje)
             virtual int DoVisib();
-                    // Provede vypocet viditelnosti jednotky a vraci jestli nasel 
+                    // Provede vypocet viditelnosti jednotky a vraci jestli nasel
                     // noveho nepritele
             virtual void Rotate(int angle) {};
             virtual void Rotate(int x, int y) {};
@@ -224,21 +224,21 @@ class TObject {
 class TUnit : public TObject {
         public:
             int MaxFuel;                                                  // max. paliva
-            
+
             int Fuel;                             // zbyvajici palivo
             int Orient;                           // orientace jednotky
             int Experience, Level;                // zkusenost a uroven
-            
+
             int WeaponsCnt;                       // Pocet zbrani
             int CurWpn;                           // aktualni zbran (-1 none)
             TWeapon *Weapons[4];                  // seznam zbrani jednotky
-            
+
             int Velocity;                         // real-live sviznost pohybu
-            
+
             TUnit() : TObject() {};
             void Init(int x, int y, int party, FILE *f = NULL);
             void Setup();
-            void AfterSetup();      
+            void AfterSetup();
             void Read(FILE *f);
             void Write(FILE *f);
             void WriteInitReq(FILE *f);
@@ -252,7 +252,7 @@ class TUnit : public TObject {
             int Attack(int x, int y);
                   // povede utok na dane policko. Vraci -1 kdyz nejsou naboje,
                   // -2 kdyz neni cas, -3 kdyz mimo dostrel, -4 kdyz na spatnem terenu
-                  // 0 kdyz jina chyba, 
+                  // 0 kdyz jina chyba,
                   // pocet sebranych zivotu na OK
             virtual void Rotate(int angle);
             virtual void Rotate(int x, int y);
@@ -278,7 +278,7 @@ class TUnit : public TObject {
                     // vola se kdyz jednotka najede na minu
             virtual int CanGoOnField(int x, int y);
                     // vraci, jestli je mozne se vylodit na tohle policko
-                    // (tj. jestli tam ta jednotka vubec muze stat = viz. vlaky) 
+                    // (tj. jestli tam ta jednotka vubec muze stat = viz. vlaky)
             int GetRepairCost();
                     // vraci cenu za opravu jednotky
             void Repair();
@@ -294,7 +294,7 @@ class TUnit : public TObject {
 class TToweredUnit : public TUnit {
         public:
             int WpnOrient;
-        
+
             TToweredUnit() : TUnit() {};
             void Init(int x, int y, int party, FILE *f);
             void Draw();
@@ -315,7 +315,7 @@ class TSupportUnit : public TUnit {
             void GetCursor(int x, int y, int *cursor, int *selbold);
             void Action(int x, int y);
             unsigned GetSupportedActions();
-            
+
             virtual void DoSupport(int x, int y);
                 // provede zasobovani/opravu jednotky na policku x,y
             virtual void SupportUnit(TUnit *Unit) {};
@@ -347,7 +347,7 @@ extern void ReadUnits(FILE *f);
         // Nacte ze souboru seznam jednotek
 extern void WriteUnits(FILE *f);
         // Zapise do souboru stav jednotek
-        
+
 extern void UpdateUnitsMem(int UnType);
         // Kdyz se nejaka jednotka uvolni nebo prida, nactou/uvolni se sprity,
         // popisne texty, jmena, zvuky atd prislusne jednotky (samozrejme jen
@@ -437,7 +437,7 @@ extern int SelectCrossLock;
 inline void LockSelectCross() {SelectCrossLock++;}
 inline void UnlockSelectCross() {SelectCrossLock--;}
 
-extern int StatusbarLock; 
+extern int StatusbarLock;
         // zamyka zobraz ukazatele stavu
 extern int UnitInfoLock;
         // zamyka zobraz. unitinfo
@@ -473,7 +473,7 @@ extern TIcon *IconSatan;
         // ikonky pro samo=d minu Satan
 extern TIcon *IconXenon, *IconXenon2;
         // ikonky pro minera
-extern TIcon *IconTransport;    
+extern TIcon *IconTransport;
         // ik. pro zakladnu, Urana, Gargantuu, Oasu
 extern TIcon *IconLand, *IconTakeoff;
         // ikonky pro vrtulniky - pristani/vzlet ze zeme
@@ -485,7 +485,7 @@ extern MIDASsample SelectSnd, WpnSelectSnd;
 extern int GoodlifeDeads, BadlifeDeads;
         // Pocet zabitych potvor behem mise
 
-extern int TimeReserve; 
+extern int TimeReserve;
         // priznak vyhrazeni casy na vystrely: 0,1,2,3
 
 extern int *SpriteLocators[UNITS_TOP];
@@ -524,8 +524,10 @@ extern char *WpnNames[WPNNM_COUNT];
 // Inliny:
 inline char *TObject::GetName()
 {
-    if (ID < BADLIFE) return UnitsNames[Type];
-    else return UnitsNames[Type-BADLIFE];
+    if (Type < BADLIFE)
+	    return UnitsNames[Type];
+    else
+	    return UnitsNames[Type-BADLIFE];
 }
 inline char *TObject::GetDescript()
 {

@@ -5,7 +5,7 @@ gra_DATA = graphics-common.dat
 
 graphics-common.dat: scr_rgb.tab pal_rgb.tab
 	rm -f $@
-	$(MAKEDAT) $@ $(srcdir)/*.{col,tab} ./*.tab
+	$(MAKEDAT) $@ $(srcdir)/*.col $(srcdir)/*.tab ./*.tab
 	$(MAKEDAT) $@ /mark $(srcdir)/bitmaps/*
 	$(MAKEDAT) $@ /mark $(srcdir)/tiles/*.tile.png
 	$(MAKEDAT) $@ /mark $(srcdir)/sprites-terrain/*.spr.png

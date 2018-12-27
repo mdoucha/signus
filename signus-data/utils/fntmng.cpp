@@ -4,7 +4,7 @@
 
 Projekt SIGNUS
 
-Mana‘er .DAT soubor– obsahuj¡c¡ch fonty (fonts.dat)
+ManaÂ‘er .DAT souborÂ– obsahujÂ¡cÂ¡ch fonty (fonts.dat)
 
 
 
@@ -19,20 +19,20 @@ Mana‘er .DAT soubor– obsahuj¡c¡ch fonty (fonts.dat)
 
 bool LoadPNG(FILE *fp, void*& _buffer, int& _w, int& _h)
 {
-    /* Taken (& modified) from wxWindows code, credits go to 
+    /* Taken (& modified) from wxWindows code, credits go to
        Robert Roebling... */
-    
+
     png_structp png_ptr;
     unsigned char **lines = NULL;
     unsigned int i;
-    png_infop info_ptr = (png_infop) NULL;   
+    png_infop info_ptr = (png_infop) NULL;
     png_uint_32 width,height;
-    int bit_depth,color_type,interlace_type;  
+    int bit_depth,color_type,interlace_type;
     unsigned x, y;
     unsigned char *buffer = NULL;
-    
+
     png_ptr = png_create_read_struct( PNG_LIBPNG_VER_STRING,
-        (voidp) NULL,
+        (void*) NULL,
         (png_error_ptr) NULL,
         (png_error_ptr) NULL );
 
@@ -108,7 +108,7 @@ bool LoadPNG(FILE *fp, void*& _buffer, int& _w, int& _h)
             png_destroy_read_struct( &png_ptr, (png_infopp) NULL, (png_infopp) NULL );
     }
 
-    
+
     return false;
 }
 
@@ -126,7 +126,7 @@ void LoadChar(const char *prefix, int ch)
 	int i;
 	unsigned short int aword;
 	unsigned char abyte;
-	
+
 	snprintf(fil, 1024, "%s/%i.png", prefix, ch);
 	f = fopen(fil, "rb");
 	if (f == NULL) {fnt -> Chars[ch].Data = NULL; return;}
@@ -140,7 +140,7 @@ void LoadChar(const char *prefix, int ch)
     fnt->Chars[ch].Width = w;
     fnt->Height = h;
     fnt->Chars[ch].Data = (byte*)buf;
-	fnt -> TotalSize += fnt -> Height * fnt -> Chars[ch].Width;    
+	fnt -> TotalSize += fnt -> Height * fnt -> Chars[ch].Width;
 }
 
 
@@ -153,7 +153,7 @@ void SaveChar(const char *prefix, int ch)
 	int i;
 	unsigned short int aword;
 	unsigned char abyte;
-	
+
 	snprintf(fil, 1024, "%s/%i.cel", prefix, ch);
 	f = fopen(fil, "wb");
 
@@ -163,7 +163,7 @@ void SaveChar(const char *prefix, int ch)
 	aword = fnt -> Height; fwrite(&aword, 2, 1, f);
 	abyte = 0; for (i = 0; i < 28; i++) fwrite(&abyte, 1, 1, f);
 	abyte = 0xFF; for (i = 0; i < 4; i++) fwrite(&abyte, 1, 1, f);
-	abyte = 0; for (i = 0; i < 762; i++) fwrite(&abyte, 1, 1, f);	
+	abyte = 0; for (i = 0; i < 762; i++) fwrite(&abyte, 1, 1, f);
     fwrite(fnt -> Chars[ch].Data, fnt -> Height * fnt -> Chars[ch].Width, 1, f);
 	fclose(f);
 }
@@ -173,8 +173,8 @@ int main(int argc, char *argv[])
 {
 	int i;
 	FILE *fi;
-	
-	if (argc != 5) {	
+
+	if (argc != 5) {
 		printf("Font Manager\nUsage: FNTMNG.EXE <fontsfile.dat> <fontname> x|c <prefix>\n"
 		       "       where x means to extract chars, c means to create font\n");
 		return 1;
@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
 		fnt = (TFont *) df -> get(argv[2]);
 		printf("Font height: %i\n", fnt -> Height);
 		printf("Extracting... [");
-		for (i = 0; i < 0xFF; i++) 
+		for (i = 0; i < 0xFF; i++)
 			if (fnt -> Chars[i].Width != 0) {
 				printf("%i ", i);
 				SaveChar(argv[4], i);
@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
 		printf("]\n");
 		freefont(fnt);
 	}
-	
+
 	else if (strcmp("c", argv[3]) == 0) {
 		fi = fopen(argv[1], "rb");
 		if (fi == NULL)
@@ -208,14 +208,14 @@ int main(int argc, char *argv[])
 		fnt -> TotalSize = 0;
 		for (i = 0; i < 0xFF; i++) fnt -> Chars[i].Width = 0;
 		printf("Creating... [");
-		for (i = 0; i < 0xFF; i++) 
+		for (i = 0; i < 0xFF; i++)
 			LoadChar(argv[4], i);
 		printf("]\n");
-		printf("Font height: %i\n", fnt -> Height);		
+		printf("Font height: %i\n", fnt -> Height);
 		df -> put(argv[2], fnt, 1/*dummy size*/);
 	}
-	
+
 	else { printf("Error in 3rd parameter!\n"); return 2; }
-	
+
 	delete df;
 }

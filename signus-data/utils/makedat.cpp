@@ -2,7 +2,7 @@
 /*
 
 
-Tento program slou‘¡ k vytv ©en¡ .DAT soubor–
+Tento program slouÂ‘Â¡ k vytvÂ Â©enÂ¡ .DAT souborÂ–
 
 
 */
@@ -27,7 +27,7 @@ using namespace std;
 time_t ourtime()
 {
 	struct tm t;
-	
+
 	t.tm_year = 1991 - 1900;
 	t.tm_mon = 2;
 	t.tm_mday = 2;
@@ -43,12 +43,12 @@ time_t ourtime()
 
 
 typedef struct {
-			byte Terrain;        // prvn¡ level
-			byte Terrain2;       // druh  £rove¤ ter‚nu
+			byte Terrain;        // prvnÂ¡ level
+			byte Terrain2;       // druhÂ  Â£roveâ‚¬ terÂ‚nu
 			byte Unit;           // where 0xFF = none
-			byte Height    : 3;  // v˜¨ka ter‚nu (0..7)
-			byte IsAnim    : 1;  // je to animovan‚?
-			byte Visib     : 2;  // viditelnost 00-nic, 01-¨edˆ, 11-plnˆ
+			byte Height    : 3;  // vÂ˜Å¡ka terÂ‚nu (0..7)
+			byte IsAnim    : 1;  // je to animovanÂ‚?
+			byte Visib     : 2;  // viditelnost 00-nic, 01-Å¡edÂˆ, 11-plnÂˆ
 } TField;
 
 
@@ -93,22 +93,22 @@ bool LoadPNG(FILE *fp, void*& _buffer, int& _w, int& _h)
         palette_loaded=true;
     }
 
-    
-    /* Taken (& modified) from wxWindows code, credits go to 
+
+    /* Taken (& modified) from wxWindows code, credits go to
        Robert Roebling... */
-    
+
     png_structp png_ptr;
     unsigned char **lines = NULL;
     unsigned int i;
-    png_infop info_ptr = (png_infop) NULL;   
+    png_infop info_ptr = (png_infop) NULL;
     png_uint_32 width,height;
-    int bit_depth,color_type,interlace_type;  
+    int bit_depth,color_type,interlace_type;
     unsigned x, y;
     unsigned char *buffer = NULL;
     unsigned char *buffer2 = NULL;
-    
+
     png_ptr = png_create_read_struct( PNG_LIBPNG_VER_STRING,
-        (voidp) NULL,
+        (void*) NULL,
         (png_error_ptr) NULL,
         (png_error_ptr) NULL );
 
@@ -131,8 +131,8 @@ bool LoadPNG(FILE *fp, void*& _buffer, int& _w, int& _h)
     png_get_IHDR( png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_type, (int*) NULL, (int*) NULL );
 
     assert( color_type == PNG_COLOR_TYPE_PALETTE );
-    
-    if (color_type == PNG_COLOR_TYPE_PALETTE) 
+
+    if (color_type == PNG_COLOR_TYPE_PALETTE)
         png_set_palette_to_rgb(png_ptr);
 
     png_set_strip_16( png_ptr );
@@ -166,10 +166,10 @@ bool LoadPNG(FILE *fp, void*& _buffer, int& _w, int& _h)
         if (buffer[4*i+3] < 128)
             buffer2[i] = 0;
         else
-            buffer2[i] = 
+            buffer2[i] =
                 findNearestColor(buffer[4*i+0],buffer[4*i+1],buffer[4*i+2]);
     }
-        
+
     _w = width;
     _h = height;
     _buffer = (void*)buffer2;
@@ -198,7 +198,7 @@ bool LoadPNG(FILE *fp, void*& _buffer, int& _w, int& _h)
             png_destroy_read_struct( &png_ptr, (png_infopp) NULL, (png_infopp) NULL );
     }
 
-    
+
     return false;
 }
 
@@ -223,8 +223,8 @@ unsigned NohdrDataWrite(FILE *f, void *ptr, size_t size)
 {
 	void *buf = malloc(256*1024);
 	size_t sz = size;
-	
-	
+
+
 	while (sz > 0) {
 		if (sz > 256*1024) {
             fread(buf, 256*1024, 1, nhdf);
@@ -245,7 +245,8 @@ unsigned NohdrDataWrite(FILE *f, void *ptr, size_t size)
 
 unsigned GetFileSize(FILE *f)
 {
-   long pos = ftell(f); 
+   assert(f != NULL);
+   long pos = ftell(f);
    fseek(f, 0, SEEK_END);
    long pos2 = ftell(f);
    fseek(f, pos, SEEK_SET);
@@ -262,18 +263,23 @@ void AddFile(char *prefix, char *dir, char *name)
 	FILE *fi;
 	int i;
 	unsigned short words[4];
-	
+
 	strcpy(jm, dir);
 	strcat(jm, name);
-  	
+
 	fi = fopen(jm, "rb");
+
+	if (fi == NULL) {
+		printf("'%s' is missing\n", jm);
+		abort();
+	}
 
     unsigned filesize = GetFileSize(fi);
 
 	char noext[256];
     char *basename = strrchr(jm, '/');
     if (basename) basename++;
-    else basename = jm;    
+    else basename = jm;
 	strcpy(noext, basename);
 	char *exten = strstr(noext, ".") + 1;
 	*(exten - 1) = 0;
@@ -282,7 +288,7 @@ void AddFile(char *prefix, char *dir, char *name)
 	strcat(resnm, noext);
 	//strlwr(resnm);
 	cout << "adding " << resnm << " ";
-	if (strcmp(exten, "col") == 0) {  	
+	if (strcmp(exten, "col") == 0) {
 		cout << "[palette]";
 		fseek(fi, 8, SEEK_SET);
 		bufsize = 768;
@@ -310,27 +316,27 @@ void AddFile(char *prefix, char *dir, char *name)
         if (!LoadPNG(fi, buf, w, h))
            cerr << "   ERROR LOADING PNG!!! " << jm <<  endl;
 		bufsize = w*h;
-        
+
         byte *buf2 = (byte*)malloc(bufsize+16);
         memcpy(buf2+16, buf, bufsize);
         free(buf);
         buf = buf2;
         bufsize += 16;
-        
+
         char hotspot[1024];
         int dx, dy;
         strcpy(hotspot, jm);
         strcpy(hotspot + strlen(jm)-4, ".hotspot");
         FILE *hsf = fopen(hotspot, "rt");
         fscanf(hsf, "%i %i", &dx, &dy);
-        fclose(hsf); 
-        
+        fclose(hsf);
+
         memcpy(buf2, &dx, 4);
         memcpy(buf2+4, &dy, 4);
         memcpy(buf2+8, &w, 4);
         memcpy(buf2+12, &h, 4);
 
-		if ((w >= 256) || (h >= 256)) 
+		if ((w >= 256) || (h >= 256))
 			cerr << "  SPRITE IS TOO LARGE (" << words[0] << "x" << words[1] << ")\7" << endl;
 	}
 	else if (strcmp(exten, "tile.png") == 0) {
@@ -344,11 +350,11 @@ void AddFile(char *prefix, char *dir, char *name)
         bufsize = 0;
         for (z = 0; z < w*h; z++)
             if (buf2[z] != key) bufsize++;
-        buf = malloc(bufsize);        
+        buf = malloc(bufsize);
         byte *buf3 = (byte*)buf;
         for (z = 0; z < w*h; z++)
-            if (buf2[z] != key) *(buf3++) = buf2[z];      
-        
+            if (buf2[z] != key) *(buf3++) = buf2[z];
+
         free(buf2);
 	}
 	else if (strcmp(exten, "fnt") == 0) {
@@ -377,7 +383,7 @@ void AddFile(char *prefix, char *dir, char *name)
 	if (temporary) {
 		char bbb[200];
 		FILE *fff;
-		
+
 		sprintf(bbb, "/tmp/signus-data-temp_%s", resnm);
 		fff = fopen(bbb, "wb");
 		fwrite(&bufsize, 4, 1, fff);
@@ -398,10 +404,10 @@ void AddItem(char *prefix, char *dirname, char *name)
 {
     DIR *dir;
 	struct dirent *di;
-	
+
     dir = opendir(dirname);
     if (!dir) return;
-    
+
     for (di = readdir(dir); di; di = readdir(dir))
     {
             string name(di->d_name);
@@ -410,10 +416,10 @@ void AddItem(char *prefix, char *dirname, char *name)
 
 			if (name == "." || name == "..")
 				continue;
-            
+
 			AddFile(prefix, dirname, di->d_name);
 	}
-    
+
     closedir(dir);
 }
 #endif
@@ -425,7 +431,7 @@ int main(int argc, char *argv[])
 		cout << "Parameters: makedat <datafile.dat> [/nohdr | /fnt | /mark] <directories...>\n";
 		return 1;
 	}
-	{	
+	{
 		int start = 2;
 		if (strcmp(argv[2], "/fnt") == 0) {
 			cout << "Using font module..." << endl;

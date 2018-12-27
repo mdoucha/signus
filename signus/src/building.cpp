@@ -50,7 +50,7 @@ void TBuilding::Init(int x, int y, int party, FILE *f)
     RepairingNow = FALSE;
     if (f != NULL) {
         int moreinfo;
-        
+
         fread(&moreinfo, 4, 1, f);
         if (moreinfo)   Read(f);
     }
@@ -86,7 +86,7 @@ void TBuilding::PlaceGround(int place)
 {
     int ax, ay;
     TField *f;
-    
+
     for (ax = 0; ax < SizeX; ax++)
         for (ay = 0; ay < SizeY; ay++) {
             f = GetField(X+ax, Y+ay);
@@ -124,22 +124,22 @@ void TBuilding::Draw()
         // zabezp. ze se to cele kresli jenom jednou na jeden pruchod paintUnits
     if (lastdrawid[ID] == DrawingID) return;
     lastdrawid[ID] = DrawingID;
-    
+
     TField *f = GetField(X, Y);
     TSprite *s, *sst;
     int rrx = GetRelX(X), rry = GetRelY(Y);
     int drawx = 28 * (rrx - rry) + LittleX + 28;
     int drawy = 14 * (rrx + rry - (f->Height)) + LittleY + 14;
-    
+
     if ((!SelectCrossLock) && (SelectedUnit == this)) {
         void *oldb = MapBuf;
         int i, j;
-        
+
         MapBuf = FullBuf;
         for (i = 0; i < SizeX; i++)
-            for (j = 0; j < SizeY; j++) 
+            for (j = 0; j < SizeY; j++)
                 if (GetField(X+i, Y+j)->OnScreen)
-                    DrawL2Selector(drawx + 28*(i-j), 
+                    DrawL2Selector(drawx + 28*(i-j),
                                    drawy + 14*(i+j) + 28, f->Terrain, BmpSelected);
         MapBuf = oldb;
   }
@@ -153,7 +153,7 @@ void TBuilding::Draw()
             memfree(sst);
         }
     }
-    GetDrawRect(&(LD_rect[ID])); LD_used[ID] = TRUE;    
+    GetDrawRect(&(LD_rect[ID])); LD_used[ID] = TRUE;
 }
 
 
@@ -166,14 +166,14 @@ TSprite *TBuilding::GetStatusBar()
     memset(s, 1, 4 * sizeof(int) + 44 * 6);
     s->w = 44, s->h = 6;
     s->dx = 22, s->dy = 15;
-    
-    for (i = 0; i < 42; i++) 
-        s->data[s->w * 1 + i + 1] = s->data[s->w * 2 + i + 1] = 
+
+    for (i = 0; i < 42; i++)
+        s->data[s->w * 1 + i + 1] = s->data[s->w * 2 + i + 1] =
         s->data[s->w * 3 + i + 1] = s->data[s->w * 4 + i + 1] = 72; // dark green
     sz = 42 * HitPoints / MaxHitPoints;
     if (sz < 12) clr = 10; /*red*/ else clr = 59; /*light green*/
-    for (i = 0; i < sz; i++) 
-        s->data[s->w * 1 + i + 1] = s->data[s->w * 2 + i + 1] = 
+    for (i = 0; i < sz; i++)
+        s->data[s->w * 1 + i + 1] = s->data[s->w * 2 + i + 1] =
         s->data[s->w * 3 + i + 1] = s->data[s->w * 4 + i + 1] = clr;
     return s;
 }
@@ -185,7 +185,7 @@ void TBuilding::GetUnitInfo()
     char cbuf[30];
     int clr;
 
-    TObject::GetUnitInfo(); 
+    TObject::GetUnitInfo();
     PutStr(UInfoBuf, UINFO_SX, 2, 2, GetName(), NormalFont, clrLightBlue, clrBlack);
 
     PutStr(UInfoBuf, UINFO_SX, 2, 26, SigText[TXT_STATE], NormalFont, clrWhite, clrBlack);
@@ -193,14 +193,14 @@ void TBuilding::GetUnitInfo()
     sprintf(cbuf, "%i %%", 100 * HitPoints / MaxHitPoints);
     clr = (100 * HitPoints < 20 * MaxHitPoints) ? clrRed : clrLightBlue2;
     PercentBar(UInfoBuf, UINFO_SX, 54, 28, 52, 13, clr, clrSeaBlue, (double)HitPoints / MaxHitPoints, cbuf);
-    
+
     sprintf(cbuf, SigText[TXT_FINANCE], MoneyGoodlife);
     PutStr(UInfoBuf, UINFO_SX, 2, 60, cbuf, NormalFont, clrWhite, clrBlack);
 
     if (HitPoints < MaxHitPoints) {
-        if (RepairingNow) CopyBmp(UInfoBuf, UINFO_SX, 90, 46, BmpRepair[1], 16, 52);    
-        else CopyBmp(UInfoBuf, UINFO_SX, 90, 46, BmpRepair[0], 16, 52); 
-    }       
+        if (RepairingNow) CopyBmp(UInfoBuf, UINFO_SX, 90, 46, BmpRepair[1], 16, 52);
+        else CopyBmp(UInfoBuf, UINFO_SX, 90, 46, BmpRepair[0], 16, 52);
+    }
 }
 
 
@@ -208,15 +208,15 @@ void TBuilding::GetUnitInfo()
 int TBuilding::InfoEvent(TEvent *e)
 {
     int rt = TObject::InfoEvent(e);
-    
-    if (!rt && (e->What == evMouseDown) && 
+
+    if (!rt && (e->What == evMouseDown) &&
        (IsInRect(e->Mouse.Where.x - UINFO_X, e->Mouse.Where.y - UINFO_Y,
                  90, 46, 90+16, 46+52))) {
         if (HitPoints < MaxHitPoints) RepairBuilding(!RepairingNow);
         ShowUnitInfo();
         return TRUE;
     }
-    return rt;  
+    return rt;
 }
 
 
@@ -224,7 +224,7 @@ int TBuilding::InfoEvent(TEvent *e)
 void TBuilding::TurnReset()
 {
     int money, i;
-    
+
     TObject::TurnReset();
     if (RepairingNow && (HitPoints < MaxHitPoints)) { // oprava budovy
         money = GetMoney(ID);
@@ -272,7 +272,7 @@ void TBuilding::Explode()
 {
     int i, j, k;
     int drw = Units[ID]->IsPartOnScreen() && (GetAllVisib() == 2);
-    
+
     if (drw) {
         for (i = 0; i < SizeX; i++)
             for (j = 0; j < SizeY; j++) {
@@ -280,13 +280,13 @@ void TBuilding::Explode()
                 MakeCrater(X+i, Y+j, cratCrater);
                 GetField(X+i, Y+j)->Unit = ID;
                 for (k = 0; k < 2; k++)
-                    AddExplode1x1(X+i, Y+j, 0, 
+                    AddExplode1x1(X+i, Y+j, 0,
                             10 - 20 * rand() / RAND_MAX, 10 - 20 * rand() / RAND_MAX);
             }
     }
     else this->RemoveFromWorld();
     for (i = X-1; i < X + SizeX+1; i++)
-        for (j = Y-1; j < Y + SizeY+1; j++) 
+        for (j = Y-1; j < Y + SizeY+1; j++)
             if (GetField(i, j)->Unit != this->ID)
                 WeaponAttack(i, j, wpnExplos, utBUILDING_BOOM_AN, utBUILDING_BOOM_BN);
 }
@@ -305,7 +305,7 @@ void TMutableBuilding::Init(int x, int y, int party, FILE *f)
     RepairingNow = FALSE;
     if (f != NULL) {
         int moreinfo;
-        
+
         fread(&Mutation, 4, 1, f);
         PlaceGround(FALSE);
         Setup(); // znovu - update!!!
@@ -481,15 +481,15 @@ void TArtefactHouse::Setup()
     MaxHitPoints = utAH_HP;
     Visib = utAH_VIS;
     Defense[0] = utAH_DN0, Defense[1] = utAH_DN1, Defense[2] = utAH_DN2;
-    
+
     switch (Mutation) {
-        case 0 : case 1 : 
+        case 0 : case 1 :
             SizeX = 1, SizeY = 1;
             break;
         case 2 : case 3 : case 4 : case 5 :
             SizeX = SizeY = 3;
             break;
-        case 6 : 
+        case 6 :
             SizeX = SizeY = 7;
             break;
         case 7 :
@@ -520,27 +520,27 @@ void TArtefactHouse::Draw()
         // zabezp. ze se to cele kresli jenom jednou na jeden pruchod paintUnits
     if (lastdrawid[ID] == DrawingID) return;
     lastdrawid[ID] = DrawingID;
-    
+
     TField *f = GetField(X, Y);
     TSprite *s;
     int rrx = GetRelX(X), rry = GetRelY(Y);
     int drawx = 28 * (rrx - rry) + LittleX + 28;
     int drawy = 14 * (rrx + rry - (f->Height)) + LittleY + 14;
-    
+
     if ((!SelectCrossLock) && (SelectedUnit == this)) {
         void *oldb = MapBuf;
         int i, j;
-        
+
         MapBuf = FullBuf;
         for (i = 0; i < SizeX; i++)
-            for (j = 0; j < SizeY; j++) 
+            for (j = 0; j < SizeY; j++)
                 if (GetField(X+i, Y+j)->OnScreen)
-                    DrawL2Selector(drawx + 28*(i-j), 
+                    DrawL2Selector(drawx + 28*(i-j),
                                    drawy + 14*(i+j) + 28, f->Terrain, BmpSelected);
         MapBuf = oldb;
   }
 
-    s = GetSprite();    
+    s = GetSprite();
     if (Mutation == 7) {
         DrawSprite(drawx, drawy, UnitsSprites[Type][Mutation]);
         DrawSprite(drawx, drawy, UnitsSprites[Type][Mutation+8]);
@@ -548,7 +548,7 @@ void TArtefactHouse::Draw()
     else
         DrawSprite(drawx, drawy, s);
 
-    GetDrawRect(&(LD_rect[ID])); LD_used[ID] = TRUE;    
+    GetDrawRect(&(LD_rect[ID])); LD_used[ID] = TRUE;
 }
 
 
@@ -577,7 +577,7 @@ void TBase::Setup()
 void TBase::Init(int x, int y, int party, FILE *f)
 {
     TBuilding::Init(x, y, party, f);
-    if (IconTransport == NULL) 
+    if (IconTransport == NULL)
         IconTransport = new TIcon(RES_X-115, UINFO_Y+110, 102, 23, "tranbut%i", 13);
     if ((Capacity == TCAPACITY_BIG) && (BmpBigInventory == NULL))
         BmpBigInventory = GraphicsDF->get("tranbox0");
@@ -608,7 +608,7 @@ int TBase::WantToLoad(TUnit *u)
 int TBase::LoadUnit(TUnit *u)
 {
     int ttm;
-    
+
     if (LoadedUnits == Capacity) return -2;
     if (!WantToLoad(u)) return -1;
     ttm = u->TimeToMove(X + 2, Y + 6);
@@ -635,7 +635,7 @@ int TBase::LoadUnit(TUnit *u)
 int TBase::UnloadUnit(TUnit *u)
 {
     TField *f = GetField(X + 2, Y + 6);
-    
+
     if (u->TimeUnits == 0) return -2;
     if (f->Unit != NO_UNIT) {
         if (((f->Unit < BADLIFE) && (ID >= BADLIFE)) ||
@@ -669,9 +669,9 @@ void TBase::DoInventory()
 {
     int rt, uurt;
     TTransBox *tb;
-    
+
     SelectField(0, 0);
-    
+
 	switch (Capacity) {
 	case TCAPACITY_BIG:
 		tb = new TTransBox(472, 202, Inventory, LoadedUnits, (byte*)BmpBigInventory);
@@ -687,7 +687,7 @@ void TBase::DoInventory()
 	}
 
     tb->Show();
-    while (TRUE) {      
+    while (TRUE) {
         rt = tb->Handle();
         if (rt == -1) {tb->Hide(); break;}
         RedrawMapLocks++, SelFldLocks++;
@@ -718,7 +718,7 @@ void TBase::DoInventory()
 int TBase::InfoEvent(TEvent *e)
 {
     int rt = TBuilding::InfoEvent(e);
-    
+
     if (!rt && IconTransport->Handle(e)) {
         DoInventory();
         return TRUE;
@@ -732,7 +732,7 @@ void TBase::Action(int x, int y)
 {
     {
         int i, j;
-    
+
         for (i = 0; i < SizeX; i++)
             for (j = 0; j < SizeY; j++)
                 if ((x == X+i) && (y == Y+j) && (UnitActionType != uatSelectAir)) {
@@ -740,7 +740,7 @@ void TBase::Action(int x, int y)
                     return;
                 }
     }
-    
+
     TBuilding::Action(x, y);
 }
 
@@ -749,7 +749,7 @@ void TBase::Action(int x, int y)
 void TBase::GetUnitInfo()
 {
     TBuilding::GetUnitInfo();
-    CopyBmp(UInfoBuf, UINFO_SX, 3, 110, IconTransport->IconPic[0], 102, 23);  
+    CopyBmp(UInfoBuf, UINFO_SX, 3, 110, IconTransport->IconPic[0], 102, 23);
     PercentBar(UInfoBuf, UINFO_SX, 3, 135, 102, 8, clrLightBlue2, clrSeaBlue,
                ((double)LoadedUnits / Capacity), "");
 }
@@ -759,7 +759,7 @@ void TBase::GetUnitInfo()
 void TBase::Read(FILE *f)
 {
     int id;
-    
+
     TBuilding::Read(f);
     fread(&LoadedUnits, 4, 1, f);
     for (int i = 0; i < LoadedUnits; i++) {
@@ -771,7 +771,7 @@ void TBase::Read(FILE *f)
 void TBase::Write(FILE *f)
 {
     int id;
-    
+
     TBuilding::Write(f);
     fwrite(&LoadedUnits, 4, 1, f);
     for (int i = 0; i < LoadedUnits; i++) {
@@ -785,7 +785,7 @@ void TBase::Write(FILE *f)
 void TBase::ChangeParty()
 {
     TObject *dum;
-    
+
     TBuilding::ChangeParty();
     for (int i = 0; i < LoadedUnits; i++) {
         dum = Units[Inventory[i]];
@@ -798,7 +798,7 @@ void TBase::ChangeParty()
 
 void TBase::RemoveFromWorld()
 {
-    for (int i = 0; i < LoadedUnits; i++) 
+    for (int i = 0; i < LoadedUnits; i++)
         Units[Inventory[i]]->RemoveFromWorld();
     TBuilding::RemoveFromWorld();
 }
@@ -809,7 +809,7 @@ void TBase::RemoveFromWorld()
 
 
 
-//////////////////// TWarehouse 
+//////////////////// TWarehouse
 
 void TWarehouse::Setup()
 {
@@ -836,7 +836,7 @@ int TWarehouse::RefullUnit(TUnit *u)
     int i, j, ttm, bttm = 9999, bx, by;
     TGnom *ugn;
     TGanymedes *uga;
-    
+
     for (i = -1; i < SizeX+1; i++)
         for (j = -1; j < SizeY+1; j++) {
             ttm = u->TimeToMove(X + i, Y + j);
@@ -848,12 +848,12 @@ int TWarehouse::RefullUnit(TUnit *u)
     if ((u->X != bx) || (u->Y != by)) {ShowHelpers(); return FALSE;}
 
     u->TimeUnits = 0;
-    
+
     switch (u->Type) {
-        case unCeres : 
+        case unCeres :
                 u->Fuel = u->MaxFuel;
                 break;
-        case unGnom : 
+        case unGnom :
                 ugn = (TGnom*) u;
                 u->Fuel = u->MaxFuel;
                 for (i = 0; i < 4; i++) ugn->Ammo[i] = ugn->MaxAmmo[i];
@@ -862,16 +862,16 @@ int TWarehouse::RefullUnit(TUnit *u)
                 uga = (TGanymedes*) u;
                 for (i = 0; i < 4; i++) uga->Ammo[i] = uga->MaxAmmo[i];
                 break;
-        case unXenon : 
+        case unXenon :
                 ((TXenon*)u)->Mines = utXE_MINES;
                 u->Fuel = u->MaxFuel;
                 break;
-        default : 
+        default :
                 u->Fuel = u->MaxFuel;
                 for (i = 0; i < u->WeaponsCnt; i++)
                     u->Weapons[i]->Ammo = u->Weapons[i]->MaxAmmo;
                 break;
-    }   
+    }
 
     ShowHelpers();
     return TRUE;
@@ -900,7 +900,7 @@ void TFactory::Setup()
 int TFactory::InfoEvent(TEvent *e)
 {
     int rt = TBuilding::InfoEvent(e);
-    
+
     if (!rt && IconTransport->Handle(e)) {
         DoProducing();
         return TRUE;
@@ -914,7 +914,7 @@ void TFactory::Action(int x, int y)
 {
     {
         int i, j;
-    
+
         for (i = 0; i < SizeX; i++)
             for (j = 0; j < SizeY; j++)
                 if ((x == X+i) && (y == Y+j) && (UnitActionType != uatSelectAir)) {
@@ -922,7 +922,7 @@ void TFactory::Action(int x, int y)
                     return;
                 }
     }
-    
+
     TBuilding::Action(x, y);
 }
 
@@ -939,11 +939,11 @@ void TFactory::DoProducing()
     int i, top, cnt, scrsz;
     int px, py;
     int *list = GetManufacturableUnits(ID);
-    
+
     for (cnt = 0; list[cnt] != 0; cnt++) {}
     top = 0;
     scrsz = (cnt < 8) ? cnt : 7;
-    
+
     px = RES_X-421, py = RES_Y-453-8;
     if (iniResolution == SVGA_640x480) py += 8;
     GetBitmap32(px, py, bmp2, 296, 431);
@@ -954,7 +954,7 @@ draw_it_now:
     PutStr(bmp, 296, 180, 8, SigText[TXT_FACTORY_COST], NormalFont, clrWhite, clrBlack);
     PutStr(bmp, 296, 240, 8, SigText[TXT_FACTORY_TURNS], NormalFont, clrWhite, clrBlack);
     for (i = 0; i < scrsz; i++) {
-        CopyBmp(bmp, 296, 12, 20 + i * 58, UnitsTransIcons[list[top+i]], 56, 56);   
+        CopyBmp(bmp, 296, 12, 20 + i * 58, UnitsTransIcons[list[top+i]], 56, 56);
         PutStr(bmp, 296, 74, 40 + i * 58, UnitsNames[list[top+i]], NormalFont, clrWhite, clrBlack);
         sprintf(b, SigText[TXT_CREDITS], TabUnitsCost[list[top+i]]);
         if (MoneyGoodlife < TabUnitsCost[list[top+i]])
@@ -998,9 +998,9 @@ draw_it_now:
 void TFactory::GetUnitInfo()
 {
     char cbuf[80];
-    
+
     TBuilding::GetUnitInfo();
-    CopyBmp(UInfoBuf, UINFO_SX, 3, 110, IconTransport->IconPic[0], 102, 23);  
+    CopyBmp(UInfoBuf, UINFO_SX, 3, 110, IconTransport->IconPic[0], 102, 23);
     sprintf(cbuf, SigText[TXT_FINANCE], MoneyGoodlife);
     PutStr(UInfoBuf, UINFO_SX, 2, 60, cbuf, NormalFont, clrWhite, clrBlack);
     if (CurrentJob != 0) {
@@ -1032,7 +1032,7 @@ void TFactory::Select()
 void TFactory::TurnReset()
 {
     TObject *obj = NULL;
-    
+
     TBuilding::TurnReset();
     if (CurrentJob != 0) {
         if (CurrentPhase >= CurrentNeed) CurrentPhase = CurrentNeed-1;
@@ -1043,13 +1043,13 @@ void TFactory::TurnReset()
             }
             obj->Init(X + 4, Y + 3, ID & BADLIFE, NULL);
             obj->Rotate(3);
-            CurrentJob = 0;         
+            CurrentJob = 0;
         }
     }
 }
 
 
-        
+
 int TFactory::ProduceUnit(int untype)
 {
     if (CurrentJob != 0) { // vrati money
@@ -1059,7 +1059,7 @@ int TFactory::ProduceUnit(int untype)
 
     if (GetMoney(ID) < TabUnitsCost[untype % BADLIFE]) return FALSE;
     SetMoney(ID, GetMoney(ID) - TabUnitsCost[untype % BADLIFE]);
-    
+
     CurrentJob = untype;
     CurrentPhase = 0;
     CurrentNeed = TabUnitsProducTime[CurrentJob % BADLIFE];
@@ -1124,7 +1124,7 @@ unsigned TAirport::GetAvailableActions()
 int TAirport::LoadUnit(TUnit *u)
 {
     int ttm;
-    
+
     if (LoadedUnits == Capacity) return -2;
     ttm = u->TimeToMove(X-1, Y+2);
     if (ttm < 0) return -1;
@@ -1134,7 +1134,7 @@ int TAirport::LoadUnit(TUnit *u)
 
     if (GetAllVisib() == 2) {
         int i, altd;
-        
+
         PlaySample(u->GetUnitSound(7), 6, EffectsVolume, GetFieldPanning(u->X, u->Y));
         altd = (u->Alt - Alt) * 14;
         u->Rotate(5);
@@ -1168,16 +1168,19 @@ int TAirport::LoadUnit(TUnit *u)
 int TAirport::UnloadUnit(TUnit *u)
 {
     TAircraft *a = GetAircraftAt(X-1, Y+2);
-    
+
     if (u->TimeUnits == 0) return -2;
     if (a != NULL) {
         if (((a->ID < BADLIFE) && (ID >= BADLIFE)) ||
             ((a->ID >= BADLIFE) && (ID < BADLIFE))) return -1;
         HideHelpers();
         a->Select();
-                     a->Move(X-2, Y+2  ); a = GetAircraftAt(X-1, Y+2);
-        if (a != NULL) a->Move(X-3, Y+2  ); a = GetAircraftAt(X-1, Y+2);
-        if (a != NULL) a->Move(X-4, Y+2  ); a = GetAircraftAt(X-1, Y+2);
+        a->Move(X-2, Y+2  );
+        a = GetAircraftAt(X-1, Y+2);
+        if (a != NULL) a->Move(X-3, Y+2  );
+        a = GetAircraftAt(X-1, Y+2);
+        if (a != NULL) a->Move(X-4, Y+2  );
+        a = GetAircraftAt(X-1, Y+2);
         this->Select();
         ShowHelpers();
         if (a != NULL) return -1;
@@ -1195,7 +1198,7 @@ int TAirport::UnloadUnit(TUnit *u)
 
     if (GetAllVisib() == 2) {
         int i, altd;
-        
+
         PlaySample(u->GetUnitSound(6), 6, EffectsVolume, GetFieldPanning(u->X, u->Y));
         HideHelpers();
         u->Select();
@@ -1225,7 +1228,7 @@ void TAirport::TurnReset()
 {
     int i;
     TUnit *u;
-    
+
     TBase::TurnReset();
     for (i = 0; i < LoadedUnits; i++) {
         u = (TUnit*) Units[Inventory[i]];
@@ -1268,7 +1271,7 @@ unsigned THeliport::GetAvailableActions()
 int THeliport::LoadUnit(TUnit *u)
 {
     int ttm;
-    
+
     if (LoadedUnits == Capacity) return -2;
     ttm = u->TimeToMove(X+3, Y+1);
     if (ttm < 0) return -1;
@@ -1278,7 +1281,7 @@ int THeliport::LoadUnit(TUnit *u)
 
     if (GetAllVisib() == 2) {
         int i, altd;
-        
+
         PlaySample(u->GetUnitSound(7), 6, EffectsVolume, GetFieldPanning(u->X, u->Y));
         altd = (u->Alt - Alt) * 14;
         u->LittleY = -7;
@@ -1310,16 +1313,18 @@ int THeliport::LoadUnit(TUnit *u)
 int THeliport::UnloadUnit(TUnit *u)
 {
     TAircraft *a = GetAircraftAt(X+3, Y+1);
-    
+
     if (u->TimeUnits == 0) return -2;
     if (a != NULL) {
         if (((a->ID < BADLIFE) && (ID >= BADLIFE)) ||
             ((a->ID >= BADLIFE) && (ID < BADLIFE))) return -1;
         HideHelpers();
         a->Select();
-                     a->Move(X+3, Y+0  ); a = GetAircraftAt(X+3, Y+1);
-        if (a != NULL) a->Move(X+3, Y-1  ); a = GetAircraftAt(X+3, Y+1);
-        if (a != NULL) a->Move(X+3, Y+2  ); a = GetAircraftAt(X+3, Y+1);
+        a->Move(X+3, Y+0  ); a = GetAircraftAt(X+3, Y+1);
+        if (a != NULL) a->Move(X+3, Y-1  );
+        a = GetAircraftAt(X+3, Y+1);
+        if (a != NULL) a->Move(X+3, Y+2  );
+        a = GetAircraftAt(X+3, Y+1);
         this->Select();
         ShowHelpers();
         if (a != NULL) return -1;
@@ -1334,7 +1339,7 @@ int THeliport::UnloadUnit(TUnit *u)
 
     if (GetAllVisib() == 2) {
         int i, altd;
-        
+
         PlaySample(u->GetUnitSound(6), 6, EffectsVolume, GetFieldPanning(u->X, u->Y));
         HideHelpers();
         u->Select();
@@ -1382,7 +1387,7 @@ void TRepairBay::TurnReset()
 {
     int i;
     TUnit *u;
-    
+
     TBase::TurnReset();
     for (i = 0; i < LoadedUnits; i++) {
         u = (TUnit*) Units[Inventory[i]];
@@ -1395,17 +1400,17 @@ void TRepairBay::TurnReset()
 int TRepairBay::GetLoadingPoint(int *x, int *y, TUnit *u)
 {
     int t, i, j, best = 0xFFFF;
-    
+
     if (u->X != -1) {
         if ((u->ID < BADLIFE) && (this->ID >= BADLIFE)) return FALSE;
         if ((u->ID >= BADLIFE) && (this->ID < BADLIFE)) return FALSE;
-    
+
         for (i = -1; i <= 3; i++)
             for (j = -1; j <= 3; j++) {
                 t = u->TimeToMove(X + i, Y + j);
                 if ((t >= 0) && (t < best) && (u->CanGoOnField(X+i, Y+j))) {
                     best = t;
-                    *x = X + i, *y = Y + j;                 
+                    *x = X + i, *y = Y + j;
                 }
             }
     }
@@ -1419,7 +1424,7 @@ int TRepairBay::GetLoadingPoint(int *x, int *y, TUnit *u)
                 }
             }
     }
-    
+
     return (best != 0xFFFF);
 }
 
@@ -1428,7 +1433,7 @@ int TRepairBay::GetLoadingPoint(int *x, int *y, TUnit *u)
 int TRepairBay::LoadUnit(TUnit *u)
 {
     int ttm, xx, yy;
-    
+
     if (LoadedUnits == Capacity) return -2;
     if (!GetLoadingPoint(&xx, &yy, u)) return -1;
     ttm = u->TimeToMove(xx, yy);
@@ -1452,7 +1457,7 @@ int TRepairBay::LoadUnit(TUnit *u)
 int TRepairBay::UnloadUnit(TUnit *u)
 {
     int xx, yy;
-    
+
     if (!GetLoadingPoint(&xx, &yy, u)) return -1;
     if (u->TimeUnits == 0) return -2;
 
@@ -1497,7 +1502,7 @@ void TDocks::TurnReset()
 {
     int i;
     TUnit *u;
-    
+
     TBase::TurnReset();
     for (i = 0; i < LoadedUnits; i++) {
         u = (TUnit*) Units[Inventory[i]];
@@ -1519,7 +1524,7 @@ inline int freefx(int id, int x, int y, int delka)
 {
     if (GetField(x, y)->Unit != NO_UNIT) return FALSE;
     if (delka >= 1) {
-        if (GetField(x-1, y)->Unit != NO_UNIT) 
+        if (GetField(x-1, y)->Unit != NO_UNIT)
             if (GetField(x-1, y)->Unit != id) return FALSE;
         if (GetField(x+1, y)->Unit != NO_UNIT)
             if (GetField(x+1, y)->Unit != id) return FALSE;
@@ -1537,15 +1542,15 @@ inline int freefy(int id, int x, int y, int delka)
 {
     if (GetField(x, y)->Unit != NO_UNIT) return FALSE;
     if (delka >= 1) {
-        if (GetField(x, y-1)->Unit != NO_UNIT) 
+        if (GetField(x, y-1)->Unit != NO_UNIT)
             if (GetField(x, y-1)->Unit != id) return FALSE;
-        if (GetField(x, y+1)->Unit != NO_UNIT) 
+        if (GetField(x, y+1)->Unit != NO_UNIT)
             if (GetField(x, y+1)->Unit != id) return FALSE;
     }
     if (delka == 2) {
-        if (GetField(x, y+2)->Unit != NO_UNIT) 
+        if (GetField(x, y+2)->Unit != NO_UNIT)
             if (GetField(x, y+2)->Unit != id) return FALSE;
-        if (GetField(x, y-2)->Unit != NO_UNIT) 
+        if (GetField(x, y-2)->Unit != NO_UNIT)
             if (GetField(x, y-2)->Unit != id) return FALSE;
     }
     return TRUE;
@@ -1555,25 +1560,25 @@ TPoint TDocks::GetLoadingPoint(TUnit *u)
 {
     int delka;
     TPoint p;
-    
+
     switch (u->Type) {
-        case unLaguna : 
+        case unLaguna :
         case unKraken :   delka = 2; break;
         case unPoseidon : delka = 1; break;
         default :         delka = 0; break;
     }
     switch (Orient) {
-        case 1 : 
-                p.y = Y + 2, p.x = X - 1 - delka; 
+        case 1 :
+                p.y = Y + 2, p.x = X - 1 - delka;
                 break;
-        case 3 : 
-                p.y = Y + 5 + delka, p.x = X + 2; 
+        case 3 :
+                p.y = Y + 5 + delka, p.x = X + 2;
                 break;
-        case 5 : 
-                p.y = Y + 2, p.x = X + 5 + delka; 
+        case 5 :
+                p.y = Y + 2, p.x = X + 5 + delka;
                 break;
-        case 7 : 
-                p.y = Y - 1 - delka, p.x = X + 2; 
+        case 7 :
+                p.y = Y - 1 - delka, p.x = X + 2;
                 break;
     }
     PlaceGround(FALSE);
@@ -1593,10 +1598,10 @@ int TDocks::LoadUnit(TUnit *u)
 {
     int ttm;
     TPoint p;
-    
+
     if (LoadedUnits == Capacity) return -2;
     if (!WantToLoad(u)) return -1;
-    
+
     p = GetLoadingPoint(u);
     if (p.x == -1) return -1;
     ttm = u->TimeToMove(p.x, p.y);
@@ -1622,7 +1627,7 @@ int TDocks::LoadUnit(TUnit *u)
 int TDocks::UnloadUnit(TUnit *u)
 {
     TPoint p;
-    
+
     if (u->TimeUnits == 0) return -2;
     p = GetLoadingPoint(u);
     if (p.x == -1) return -1;
@@ -1645,7 +1650,7 @@ void TDocks::Init(int x, int y, int party, FILE *f)
     RepairingNow = FALSE;
     if (f != NULL) {
         int moreinfo;
-        
+
         fread(&Orient, 4, 1, f);
         fread(&moreinfo, 4, 1, f);
         if (moreinfo)   Read(f);
@@ -1653,7 +1658,7 @@ void TDocks::Init(int x, int y, int party, FILE *f)
     else {
         Orient = 1;
     }
-    if (IconTransport == NULL) 
+    if (IconTransport == NULL)
         IconTransport = new TIcon(RES_X-115, UINFO_Y+110, 102, 23, "tranbut%i", 13);
     if ((Capacity == TCAPACITY_BIG) && (BmpBigInventory == NULL))
         BmpBigInventory = GraphicsDF->get("tranbox0");
@@ -1680,6 +1685,6 @@ TSprite *TDocks::GetSprite()
     if (v == 2) return UnitsSprites[Type][Orient];
     else return UnitsSprites[Type][8 + Orient];
 }
- 
+
 
  

@@ -52,10 +52,10 @@ static int RngListSize;
 static void AddField(int x, int y, int u, int d, int l, int r)
 {
 	int pos;
-	
+
 	if (GetField(x, y)->HasHelper) {
         int i;
-		for (i = 0; i < RngListSize; i++) 
+		for (i = 0; i < RngListSize; i++)
 			if ((RngList[i].x == x) && (RngList[i].y == y)) break;
 		pos = i;
 		RngList[pos].up |= u;
@@ -108,7 +108,7 @@ static void RngLine2(int x, int y, int delta, int clr)
 		*(b++) = clr, b += delta * VIEW_PIXSZ_X;
 		*(b++) = 1, b += delta * VIEW_PIXSZ_X;
 		*(b++) = 1, b += delta * VIEW_PIXSZ_X;
-	}	
+	}
 }
 
 static void RngLine3(int x, int y, int clr)
@@ -116,7 +116,7 @@ static void RngLine3(int x, int y, int clr)
 	int i;
 	byte *b = ((byte*)MapBuf) + VIEW_PIXSZ_X * y + x;
 
-	for (i = 0; i < 7; i++) 
+	for (i = 0; i < 7; i++)
 		*(b++) = clr, *(b++) = clr,	*(b++) = 1, *(b++) = 1;
 }
 
@@ -124,9 +124,9 @@ static void RngLine3(int x, int y, int clr)
 
 
 
-static int candraw(int i) 
+static int candraw(int i)
 {
-	return ((i & 1) && iniShowShootRange) || 
+	return ((i & 1) && iniShowShootRange) ||
 	       ((i & 2) && iniShowMoveRange) ||
 	       ((i & 4) && iniShowVisibRange);
 }
@@ -137,70 +137,70 @@ void DrawRangesOnField(int x, int y, int drawx, int drawy)
 	int clr;
 	TRngItem *it;
 	static int clrtab[8] = {0, 9, 4, 4, 92, 9, 4, 4};
-	
+
 	if (RangesLocks > 0) return;
 	clrtab[3] = iniShowMoveRange ? 4 : 9;
 	clrtab[5] = iniShowShootRange ? 9 : 92;
 	clrtab[6] = iniShowMoveRange ? 4 : 92;
 	clrtab[7] = iniShowMoveRange ? 4 : (iniShowShootRange ? 9 : 92);
-	for (i = 0, it = RngList; i < RngListSize; i++, it++) 
+	for (i = 0, it = RngList; i < RngListSize; i++, it++)
 		if ((it->x == x) && (it->y == y)) break;
-	
-	// upper frontier:	
+
+	// upper frontier:
 	if ((it->up) && (candraw(it->up))) {
 		clr = clrtab[it->up];
 		switch (it->terrain) {
-			case tofsL1A : case tofsL1B : case tofsL1J : case tofsL1M : 
+			case tofsL1A : case tofsL1B : case tofsL1J : case tofsL1M :
 				RngLine1(drawx + 28, drawy, 1, clr); break;
-			case tofsL1G : case tofsL1H : 
+			case tofsL1G : case tofsL1H :
 				RngLine1(drawx + 28, drawy + 14, 1, clr); break;
-			case tofsL1C : case tofsL1F : case tofsL1K :  
+			case tofsL1C : case tofsL1F : case tofsL1K :
 				RngLine2(drawx + 28, drawy, 1, clr); break;
-			case tofsL1E : case tofsL1I : case tofsL1L : 
+			case tofsL1E : case tofsL1I : case tofsL1L :
 				RngLine3(drawx + 28, drawy + 14, clr); break;
-			case tofsL1D : 
+			case tofsL1D :
 				RngLine1(drawx + 28, drawy + 14, 1, clr); break;
 		}
 	}
-	// lower frontier:	
+	// lower frontier:
 	if ((it->down) && (candraw(it->down))) {
 		clr = clrtab[it->down];
 		switch (it->terrain) {
-			case tofsL1A : case tofsL1D : case tofsL1L : case tofsL1K : 
+			case tofsL1A : case tofsL1D : case tofsL1L : case tofsL1K :
 				RngLine1(drawx, drawy + 13, 1, clr); break;
 			case tofsL1B : case tofsL1F : case tofsL1I :
 				RngLine1(drawx, drawy + 27, 1, clr); break;
 			case tofsL1C : case tofsL1G : case tofsL1J :
 				RngLine2(drawx, drawy + 12, 1, clr); break;
-			case tofsL1E : case tofsL1M : case tofsL1H : 
+			case tofsL1E : case tofsL1M : case tofsL1H :
 				RngLine3(drawx, drawy + 27, clr); break;
 		}
-	}		
-	// left frontier:	
+	}
+	// left frontier:
 	if ((it->left) && (candraw(it->left))) {
 		clr = clrtab[it->left];
 		switch (it->terrain) {
-			case tofsL1A : case tofsL1J : case tofsL1K : case tofsL1C : 
+			case tofsL1A : case tofsL1J : case tofsL1K : case tofsL1C :
 				RngLine1(drawx, drawy + 13, -1, clr); break;
 			case tofsL1I : case tofsL1H : case tofsL1E :
 				RngLine1(drawx, drawy + 27, -1, clr); break;
 			case tofsL1B : case tofsL1F : case tofsL1M :
 				RngLine2(drawx, drawy + 27, -1, clr); break;
-			case tofsL1D : case tofsL1G : case tofsL1L : 
+			case tofsL1D : case tofsL1G : case tofsL1L :
 				RngLine3(drawx, drawy + 14, clr); break;
 		}
 	}
-	// right frontier:	
+	// right frontier:
 	if ((it->right) && (candraw(it->right))) {
 		clr = clrtab[it->right];
 		switch (it->terrain) {
-			case tofsL1A : case tofsL1E : case tofsL1M : case tofsL1L : 
+			case tofsL1A : case tofsL1E : case tofsL1M : case tofsL1L :
 				RngLine1(drawx + 27, drawy + 26, -1, clr); break;
 			case tofsL1F : case tofsL1C : case tofsL1G :
 				RngLine1(drawx + 27, drawy + 40, -1, clr); break;
 			case tofsL1B : case tofsL1J : case tofsL1I :
 				RngLine2(drawx + 27, drawy + 40, -1, clr); break;
-			case tofsL1D : case tofsL1K : case tofsL1H : 
+			case tofsL1D : case tofsL1K : case tofsL1H :
 				RngLine3(drawx + 27, drawy + 27, clr); break;
 			}
 	}
@@ -246,7 +246,7 @@ void ShowRanges()
 
 int ClearRanges()
 {
-	int rn = RngListSize;	
+	int rn = RngListSize;
 	RngListSize = 0;
 	for (int i = 0; i < MapSizeX * MapSizeY; i++) Map[i].HasHelper = 0;
 	return ((rn != 0) && (iniShowMoveRange || iniShowShootRange));
@@ -288,11 +288,13 @@ void GenerateShootRng(int x, int y, int minrng, int maxrng)
 {
 	int i, j, p;
 	int u, l, r, d;
-	int x1 = x - maxrng, y1 = y - maxrng, 
+	int x1 = x - maxrng, y1 = y - maxrng,
 	    x2 = x + maxrng, y2 = y + maxrng;
-	if (x1 < 0) x1 = 0; if (y1 < 0) y1 = 0;
-	if (x2 > MapSizeX-1) x2 = MapSizeX-1; if (y2 > MapSizeY-1) y2 = MapSizeY-1;
-	
+	if (x1 < 0) x1 = 0;
+	if (y1 < 0) y1 = 0;
+	if (x2 > MapSizeX-1) x2 = MapSizeX-1;
+	if (y2 > MapSizeY-1) y2 = MapSizeY-1;
+
 	rngMapClear();
 	for (i = x1; i <= x2; i++)
 		for (j = y1; j <= y2; j++) {
@@ -309,7 +311,7 @@ void GenerateShootRng(int x, int y, int minrng, int maxrng)
 			if ((i < MapSizeX-1) && (rngMapGet(i+1, j) == 0)) r = 1;
 			if ((j > 0) && (rngMapGet(i, j-1) == 0)) u = 1;
 			if ((j < MapSizeY-1) && (rngMapGet(i, j+1) == 0)) d = 1;
-			if ((u != 0) || (d != 0) || (l != 0) || (r != 0)) 
+			if ((u != 0) || (d != 0) || (l != 0) || (r != 0))
 				AddField(i, j, u, d, l, r);
 		}
 }
@@ -344,7 +346,7 @@ void GenerateMoveRng(int x1, int y1, int x2, int y2, TObject *un)
 			if ((i < MapSizeX-1) && (rngMapGet(i+1, j) == 0)) r = 2;
 			if ((j > 0) && (rngMapGet(i, j-1) == 0)) u = 2;
 			if ((j < MapSizeY-1) && (rngMapGet(i, j+1) == 0)) d = 2;
-			if ((u != 0) || (d != 0) || (l != 0) || (r != 0)) 
+			if ((u != 0) || (d != 0) || (l != 0) || (r != 0))
 				AddField(i, j, u, d, l, r);
 		}
 }
@@ -362,11 +364,11 @@ void GenerateVisibRng(int x, int y, int maxrng)
 {
 	int i, j, p;
 	int u, l, r, d;
-	int x1 = x - maxrng, y1 = y - maxrng, 
+	int x1 = x - maxrng, y1 = y - maxrng,
 	    x2 = x + maxrng, y2 = y + maxrng;
 	if (x1 < 0) x1 = 0; if (y1 < 0) y1 = 0;
 	if (x2 > MapSizeX-1) x2 = MapSizeX-1; if (y2 > MapSizeY-1) y2 = MapSizeY-1;
-	
+
 	rngMapClear();
 	for (i = x1; i <= x2; i++)
 		for (j = y1; j <= y2; j++) {
@@ -382,7 +384,7 @@ void GenerateVisibRng(int x, int y, int maxrng)
 			if ((i < MapSizeX-1) && (rngMapGet(i+1, j) == 0)) r = 4;
 			if ((j > 0) && (rngMapGet(i, j-1) == 0)) u = 4;
 			if ((j < MapSizeY-1) && (rngMapGet(i, j+1) == 0)) d = 4;
-			if ((u != 0) || (d != 0) || (l != 0) || (r != 0)) 
+			if ((u != 0) || (d != 0) || (l != 0) || (r != 0))
 				AddField(i, j, u, d, l, r);
 		}
 }
